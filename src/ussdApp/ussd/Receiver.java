@@ -1,7 +1,7 @@
 package ussdApp.ussd;
 
 import ussdApp.util.Utility;
-import ussdApp.mappers.MatchScoresMapper;
+import ussdApp.mappers.LotteryMapper;
 import ussdApp.mappers.UsersMapper;
 import ussdApp.model.Users;
 import ussdApp.webcontent.GetContent;

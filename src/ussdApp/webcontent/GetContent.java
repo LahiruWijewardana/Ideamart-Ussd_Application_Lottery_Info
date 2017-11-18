@@ -1,12 +1,9 @@
 package ussdApp.webcontent;
 
-import java.net.URL;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.URLConnection;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import ussdApp.model.Lottery;
+import ussdApp.mappers.LotteryMapper;
 
+import java.util.ArrayList;
 import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
 import org.jsoup.nodes.Document;
@@ -35,12 +32,41 @@ public class GetContent {
 //		System.out.println(str);
 		
 		Document doc = Jsoup.connect("http://www.dlb.today/").userAgent("Mozilla/5.0").get();
-		Elements temp = doc.getElementsByClass("number_shanida number_circle");
+		Elements numberList = doc.getElementsByClass("number_shanida number_circle");
+		Elements lotteryNameList = doc.getElementsByClass("lottery_n_d");
+		Elements lotteryCharacterList = doc.getElementsByClass("eng_letter");
 		
-		System.out.println(temp.size());
+		Elements resultBlockList = doc.getElementsByClass("result_detail");
 		
-		for (int i=0; i < temp.size(); i++) {
-			System.out.println(temp.get(i).text());
+		System.out.println(numberList.size());
+		System.out.println(resultBlockList.size());
+		
+		ArrayList<Lottery> lotteryList = new ArrayList<Lottery>();
+		
+		for (int i=0; i < lotteryNameList.size(); i++) {
+			
+			String name = lotteryNameList.get(i).text().split(" \\| ")[0].split(" - ")[0];
+			String draw = lotteryNameList.get(i).text().split(" \\| ")[0].split(" - ")[1];
+			
+			Lottery lottery = new Lottery();
+			lottery.setLotteryName(name);
+			lottery.setDrawNumber(Integer.parseInt(draw));
+			
+			lotteryList.add(lottery);
+		}
+		
+		LotteryMapper lotteryMapper = new LotteryMapper();
+		lotteryMapper.setCounts(lotteryList);
+		
+		for (int i=0; i < lotteryList.size(); i++) {
+			System.out.println(lotteryList.get(i).getLotteryName());
+			System.out.println(lotteryList.get(i).getNumCount());
+			System.out.println(lotteryList.get(i).getLetterCount());
+			System.out.println(lotteryList.get(i).getBonusNumCount());
+		}
+		
+		for (int i=0; i < resultBlockList.size(); i++) {
+			System.out.println(resultBlockList.get(i).getElementsByTag("img").get(0).attr("alt"));
 		}
 	}
 	

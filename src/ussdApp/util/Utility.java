@@ -9,7 +9,7 @@ public class Utility {
     
     public static final String USSD_CODE_INIT = "*123#";
     
-    public static final String url = "jdbc:mysql://localhost:3306/cricketscore";
+    public static final String url = "jdbc:mysql://localhost:3306/lotteryinfo";
     public static final String username = "root";
     public static final String password = "lahiru123#";
     public static final String registerUserUrl = "http://localhost:8080/ussdApplication/Test";

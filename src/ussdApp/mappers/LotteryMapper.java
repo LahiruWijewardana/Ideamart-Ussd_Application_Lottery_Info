@@ -8,8 +8,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import ussdApp.dbconnect.DatabaseConnect;
+import ussdApp.model.Lottery;
 
-public class MatchScoresMapper {
+public class LotteryMapper {
 	
 	public ArrayList<String> showMatches() throws SQLException{
 
@@ -56,6 +57,34 @@ public class MatchScoresMapper {
         con.close();
 
         return score;
+    }
+	
+	public void setCounts(ArrayList<Lottery> lotteryList) throws SQLException{
+
+        DatabaseConnect connect = new DatabaseConnect();
+
+        Connection con = connect.dbConnect();
+
+        String query = "SELECT * from lottery";
+        Statement stat = con.createStatement();
+        ResultSet rs = stat.executeQuery(query);
+
+        while (rs.next()) {
+        		for (int i = 0; i < lotteryList.size(); i++) {
+        			
+        			Lottery lottery = lotteryList.get(i);
+        			
+        			if (rs.getString("lotteryName").equalsIgnoreCase(lottery.getLotteryName())) {
+        				lottery.setNumCount(rs.getInt("numCount"));
+        				lottery.setLetterCount(rs.getInt("letterCount"));
+        				lottery.setBonusNumCount(rs.getInt("bonusNumCount"));
+        			}
+        		}
+        }
+
+        con.close();
+
+        
     }
 
 }
