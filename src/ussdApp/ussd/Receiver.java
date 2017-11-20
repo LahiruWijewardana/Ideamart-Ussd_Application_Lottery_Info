@@ -37,10 +37,10 @@ public class Receiver implements MoUssdListener {
 		// TODO Auto-generated method stub
 		System.out.println("this is reciever");
 		
-//		GetContent getContent = new GetContent();
-//		
+		GetContent getContent = new GetContent();
+		
 //		try {
-//			getContent.getWebContent();
+//			getContent.getDLBWebContent();
 //		} catch (Exception e) {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
@@ -113,12 +113,21 @@ public class Receiver implements MoUssdListener {
 						
 						if (lottery.getLetterCount() == 0) {
 							returnMessage = lottery.getLotteryName() + "\n Draw Number: "+ lottery.getDrawNumber() + "\n Winning Numbers: " + lottery.getLotteryNumbers();
+							
 						} else {
 							returnMessage = lottery.getLotteryName() + "\n Draw Number: "+ lottery.getDrawNumber() + "\n Winning Numbers: " + lottery.getLotteryNumbers() + "\n Winning Letter: " + lottery.getLotteryLetter();
 						}
 						
+						if (lottery.getHasSymbol()) {
+							returnMessage = returnMessage + "\n Lucky Symbol: " + lottery.getLotterySymbol();
+						}
+						
 					} else {
 						returnMessage = lottery.getLotteryName() + "\n Draw Number: "+ lottery.getDrawNumber() + "\n Winning Numbers: " + lottery.getLotteryNumbers() + "\n Bounus Number: " + lottery.getLotteryBonus();
+						
+						if (lottery.getHasSymbol()) {
+							returnMessage = returnMessage + "\n Lucky Symbol: " + lottery.getLotterySymbol();
+						}
 					}					
 					
 					Operations operations = new Operations();

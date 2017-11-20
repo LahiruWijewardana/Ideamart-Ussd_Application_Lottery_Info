@@ -6,10 +6,24 @@ public class Lottery {
 	private int numCount;
 	private int letterCount;
 	private int bonusNumCount;
+	private Boolean hasSymbol;
 	private String lotteryNumbers;
 	private String lotteryLetter;
 	private String lotteryBonus;
+	private String lotterySymbol;
 	
+	public Boolean getHasSymbol() {
+		return hasSymbol;
+	}
+	public void setHasSymbol(Boolean hasSymbol) {
+		this.hasSymbol = hasSymbol;
+	}
+	public String getLotterySymbol() {
+		return lotterySymbol;
+	}
+	public void setLotterySymbol(String lotterySymbol) {
+		this.lotterySymbol = lotterySymbol;
+	}
 	public String getLotteryName() {
 		return lotteryName;
 	}

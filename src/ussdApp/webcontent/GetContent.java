@@ -8,37 +8,20 @@ import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
 import org.jsoup.nodes.Document;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 public class GetContent {
 	
-	public void getWebContent() throws Exception {
+	public void getDLBWebContent() throws Exception {
 		
-//		URL url = new URL("http://www.nlb.lk/home.php?sin=0");
-//		URLConnection con = url.openConnection();
-//		Pattern p = Pattern.compile("text/html;\\s+charset=([^\\s]+)\\s*");
-//		Matcher m = p.matcher(con.getContentType());
-//		/* If Content-Type doesn't match this pre-conception, choose default and 
-//		 * hope for the best. */
-//		String charset = m.matches() ? m.group(1) : "ISO-8859-1";
-//		Reader r = new InputStreamReader(con.getInputStream(), charset);
-//		StringBuilder buf = new StringBuilder();
-//		while (true) {
-//		  int ch = r.read();
-//		  if (ch < 0)
-//		    break;
-//		  buf.append((char) ch);
-//		}
-//		String str = buf.toString();
-//		
-//		System.out.println(str);
-		
-		Document doc = Jsoup.connect("http://www.dlb.today/").userAgent("Mozilla/5.0").get();
-		//Elements numberList = doc.getElementsByClass("number_shanida number_circle");
-		Elements lotteryNameList = doc.getElementsByClass("lottery_n_d");
-		//Elements lotteryCharacterList = doc.getElementsByClass("eng_letter");
-		
+		Document doc = Jsoup.connect("http://www.dlb.today/").userAgent("Mozilla/5.0").get();		
+		Elements lotteryNameList = doc.getElementsByClass("lottery_n_d");		
 		Elements resultBlockList = doc.getElementsByClass("result_detail");
 		
-		//System.out.println(numberList.size());
 		System.out.println(resultBlockList.size());
 		
 		ArrayList<Lottery> lotteryList = new ArrayList<Lottery>();
@@ -59,7 +42,7 @@ public class GetContent {
 		lotteryMapper.setCounts(lotteryList);
 		
 		for (int i = 0; i < resultBlockList.size(); i++) {
-			
+					
 			String blockName = resultBlockList.get(i).getElementsByTag("img").get(0).attr("alt");
 			
 			for (int j = 0; j < lotteryList.size(); j++) {
@@ -88,6 +71,21 @@ public class GetContent {
 							Elements lotteryletterList = resultBlockList.get(i).getElementsByClass("eng_letter");							
 							lottery.setLotteryLetter(lotteryletterList.get(0).text());							
 						}
+						//Set lottery symbol if there is one
+						if (lottery.getHasSymbol() && resultBlockList.get(i).getElementsByTag("img").size() > 1) {
+							String symbolAddress = resultBlockList.get(i).getElementsByAttributeValueContaining("alt", "zodiac_sign").attr("src");
+							
+							if(symbolAddress.split("/").length > 0) {
+								int symbolSize = symbolAddress.split("/").length;
+								String symbol = symbolAddress.split("/")[symbolSize - 1].split("\\.")[0].replaceAll("[^A-Za-z]+", "");
+								symbol = new GetContent().lotterySymbolMatch(symbol);
+								
+								lottery.setLotterySymbol(symbol);
+							}				
+							
+						}
+						
+						
 						
 					} else {
 						Elements numberList = resultBlockList.get(i).getElementsByClass("number_shanida number_circle");						
@@ -111,6 +109,19 @@ public class GetContent {
 							Elements lotteryletterList = resultBlockList.get(i).getElementsByClass("eng_letter");							
 							lottery.setLotteryLetter(lotteryletterList.get(0).text());							
 						}
+						//Set symbol if there is one
+						if (lottery.getHasSymbol() && resultBlockList.get(i).getElementsByTag("img").size() > 1) {
+							String symbolAddress = resultBlockList.get(i).getElementsByAttributeValueContaining("alt", "zodiac_sign").attr("src");
+							
+							if(symbolAddress.split("/").length > 0) {
+								int symbolSize = symbolAddress.split("/").length;
+								String symbol = symbolAddress.split("/")[symbolSize - 1].split("\\.")[0].replaceAll("[^A-Za-z]+", "");
+								symbol = new GetContent().lotterySymbolMatch(symbol);
+								
+								lottery.setLotterySymbol(symbol);
+							}				
+							
+						}
 						
 					}
 				}
@@ -128,11 +139,121 @@ public class GetContent {
 			System.out.println(lotteryList.get(i).getLotteryLetter());
 			System.out.println("bonus count"+lotteryList.get(i).getBonusNumCount());
 			System.out.println(lotteryList.get(i).getLotteryBonus());
+			System.out.println("Has a symbol" + lotteryList.get(i).getHasSymbol());
+			System.out.println(lotteryList.get(i).getLotterySymbol());
 		}
 		
 		System.out.println("Data succesfully updated");
 	}
 	
+	public String lotterySymbolMatch (String symbol) {
+		
+		if (symbol.length() <= 3) {
+			
+			switch (symbol) {
+			case "jan":
+				symbol = "JANUARY";
+				break;
+				
+			case "feb":
+				symbol = "FEBRUARY";
+				break;
+				
+			case "mar":
+				symbol = "MARCH";
+				break;
+				
+			case "sun":
+				symbol = "SUNDAY";
+				break;
+				
+			case "mon":
+				symbol = "MONDAY";
+				break;
+				
+			case "tue":
+				symbol = "TUESDAY";
+				break;
+				
+			case "wed":
+				symbol = "WEDNESDAY";
+				break;
+				
+			case "thu":
+				symbol = "THURSDAY";
+				break;
+				
+			case "fri":
+				symbol = "FRIDAY";
+				break;
+				
+			case "sat":
+				symbol = "SATURDAY";
+				break;
+				
+			}
+				
+		} else {
+			symbol = symbol.toUpperCase();
+		}
+		
+		return symbol;
+	} 
 	
+//	public void getNLBWebContent () {
+//		try {
+//
+//            String url = "http://www.nlb.lk/show-results.php";
+//
+//            URL obj = new URL(url);
+//            HttpURLConnection conn = (HttpURLConnection) obj.openConnection();
+//            conn.setReadTimeout(5000);
+//            conn.addRequestProperty("Accept-Language", "en-US,en;q=0.8");
+//            conn.addRequestProperty("User-Agent", "Mozilla");
+//
+//            conn.setDoOutput(true);
+//
+//            OutputStreamWriter w = new OutputStreamWriter(conn.getOutputStream(), "UTF-8");
+//
+//            w.write("lott=1&dno=3537&date=");
+//            w.close();
+//
+//            System.out.println("Request URL ... " + url);
+//
+//            int status = conn.getResponseCode();
+//
+//            System.out.println("Response Code ... " + status);
+//
+//            BufferedReader in = new BufferedReader(new InputStreamReader(
+//                    conn.getInputStream()));
+//            String inputLine;
+//            StringBuffer html = new StringBuffer();
+//
+//            while ((inputLine = in.readLine()) != null) {
+//                html.append(inputLine);
+//            }
+//
+//            in.close();
+//            conn.disconnect();
+//            
+//            Document doc = Jsoup.;
+//            Elements resultBlockList = doc.getElementsByClass("lottery-numbers");	
+//            Elements nameList = doc.getElementsByClass("title2");
+//            
+//            for (int i = 0; i < resultBlockList.size(); i++) {
+//            		System.out.println(resultBlockList.get(i).text());
+//            }
+//            
+//            for (int i = 0; i < nameList.size(); i++) {
+//        			System.out.println(resultBlockList.get(i).text());
+//            }
+//
+//            //System.out.println("URL Content... \n" + html.toString());
+//            System.out.println("Done");
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//	}
 
 }

@@ -10,25 +10,27 @@ CREATE TABLE lottery
   numCount INT NOT NULL ,
   letterCount INT DEFAULT 0,
   bonusNumCount INT DEFAULT 0,
+  hasSymbol BOOLEAN NOT NULL DEFAULT FALSE ,
   lotterynumbers VARCHAR(20) NOT NULL,
   lotteryLetter VARCHAR(5),
-  lotteryBonus VARCHAR(5)
+  lotteryBonus VARCHAR(5),
+  lotterySymbol VARCHAR(15)
 );
 
 
 INSERT INTO lottery
-(lotteryName, drawNumber, numCount, letterCount, bonusNumCount, lotterynumbers, lotteryLetter, lotteryBonus)
+(lotteryName, drawNumber, numCount, letterCount, bonusNumCount, hasSymbol,lotterynumbers, lotteryLetter, lotteryBonus, lotterySymbol)
 VALUES
-("KOTIPATHI SHANIDA", 1, 4, 1, 0, "1 2 3 4", "a", ""),
-("LAGNA WASANA", 1, 4, 0, 0, "1 2 3 4", "", ""),
-("NIYATHA JAYA", 1, 4, 1, 0, "1 2 3 4", "a", ""),
-("JAYODA", 1, 4, 1, 0, "1 2 3 4", "a", ""),
-("DASA LAKSHAPATHI CAR PLUS", 1, 3, 1, 0, "1 2 3", "a", ""),
-("GALAXY STAR", 1, 4, 0, 1, "1 2 3 4","", "1"),
-("DEVELOPMENT FORTUNE", 1, 4, 0, 1, "1 2 3 4", "", "1"),
-("SUPER BALL", 1, 4, 1, 0, "1 2 3 4", "a", ""),
-("ADA KOTIPATHI", 1, 4, 1, 0, "1 2 3 4", "a", ""),
-("SATURDAY FORTUNE", 1, 4, 1, 1, "1 2 3 4", "a", "1");
+("KOTIPATHI SHANIDA", 1, 4, 1, 0, FALSE, "1 2 3 4", "a", "", ""),
+("LAGNA WASANA", 1, 4, 0, 0, TRUE, "1 2 3 4", "", "", "test"),
+("NIYATHA JAYA", 1, 4, 1, 0, FALSE, "1 2 3 4", "a", "", ""),
+("JAYODA", 1, 4, 1, 0, FALSE, "1 2 3 4", "a", "", ""),
+("DASA LAKSHAPATHI CAR PLUS", 1, 3, 1, 0, TRUE, "1 2 3", "a", "", "test"),
+("GALAXY STAR", 1, 4, 0, 1, FALSE, "1 2 3 4","", "1", ""),
+("DEVELOPMENT FORTUNE", 1, 4, 0, 1, TRUE,"1 2 3 4", "", "1", "test"),
+("SUPER BALL", 1, 4, 1, 0, FALSE, "1 2 3 4", "a", "", ""),
+("ADA KOTIPATHI", 1, 4, 1, 0, FALSE, "1 2 3 4", "a", "", ""),
+("SATURDAY FORTUNE", 1, 4, 1, 1, FALSE, "1 2 3 4", "a", "1", "");
 
 SELECT * FROM lottery;
 

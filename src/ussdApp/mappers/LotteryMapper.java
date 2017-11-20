@@ -53,9 +53,11 @@ public class LotteryMapper {
         		lottery.setNumCount(rs.getInt("numCount"));
         		lottery.setLetterCount(rs.getInt("letterCount"));
         		lottery.setBonusNumCount(rs.getInt("bonusNumCount"));
+        		lottery.setHasSymbol(rs.getBoolean("hasSymbol"));
         		lottery.setLotteryNumbers(rs.getString("lotterynumbers"));
         		lottery.setLotteryLetter(rs.getString("lotteryLetter"));
         		lottery.setLotteryBonus(rs.getString("lotteryBonus"));
+        		lottery.setLotterySymbol(rs.getString("lotterySymbol"));
         }
 
         con.close();
@@ -87,6 +89,7 @@ public class LotteryMapper {
             				lottery.setLetterCount(rs.getInt("letterCount"));
             				lottery.setBonusNumCount(rs.getInt("bonusNumCount"));
             				lottery.setLotteryName(rs.getString("lotteryName"));
+            				lottery.setHasSymbol(rs.getBoolean("hasSymbol"));
         				}        				
         			}
         		}
@@ -103,7 +106,7 @@ public class LotteryMapper {
 
         Connection con = connect.dbConnect();
 
-        String sql = "UPDATE lottery SET drawNumber = ?, lotterynumbers = ?, lotteryLetter = ?, lotteryBonus = ? WHERE lotteryName = ?";
+        String sql = "UPDATE lottery SET drawNumber = ?, lotterynumbers = ?, lotteryLetter = ?, lotteryBonus = ?, lotterySymbol = ? WHERE lotteryName = ?";
         
      // create the mysql insert preparedstatement
         PreparedStatement preparedStmt = con.prepareStatement(sql);
@@ -111,7 +114,8 @@ public class LotteryMapper {
         preparedStmt.setString(2, lottery.getLotteryNumbers());
         preparedStmt.setString(3, lottery.getLotteryLetter());
         preparedStmt.setString(4, lottery.getLotteryBonus());
-        preparedStmt.setString(5, lottery.getLotteryName());
+        preparedStmt.setString(5, lottery.getLotterySymbol());
+        preparedStmt.setString(6, lottery.getLotteryName());
         
         preparedStmt.execute();
 
