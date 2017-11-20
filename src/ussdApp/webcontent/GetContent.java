@@ -32,13 +32,13 @@ public class GetContent {
 //		System.out.println(str);
 		
 		Document doc = Jsoup.connect("http://www.dlb.today/").userAgent("Mozilla/5.0").get();
-		Elements numberList = doc.getElementsByClass("number_shanida number_circle");
+		//Elements numberList = doc.getElementsByClass("number_shanida number_circle");
 		Elements lotteryNameList = doc.getElementsByClass("lottery_n_d");
-		Elements lotteryCharacterList = doc.getElementsByClass("eng_letter");
+		//Elements lotteryCharacterList = doc.getElementsByClass("eng_letter");
 		
 		Elements resultBlockList = doc.getElementsByClass("result_detail");
 		
-		System.out.println(numberList.size());
+		//System.out.println(numberList.size());
 		System.out.println(resultBlockList.size());
 		
 		ArrayList<Lottery> lotteryList = new ArrayList<Lottery>();
@@ -58,16 +58,79 @@ public class GetContent {
 		LotteryMapper lotteryMapper = new LotteryMapper();
 		lotteryMapper.setCounts(lotteryList);
 		
-		for (int i=0; i < lotteryList.size(); i++) {
-			System.out.println(lotteryList.get(i).getLotteryName());
-			System.out.println(lotteryList.get(i).getNumCount());
-			System.out.println(lotteryList.get(i).getLetterCount());
-			System.out.println(lotteryList.get(i).getBonusNumCount());
+		for (int i = 0; i < resultBlockList.size(); i++) {
+			
+			String blockName = resultBlockList.get(i).getElementsByTag("img").get(0).attr("alt");
+			
+			for (int j = 0; j < lotteryList.size(); j++) {
+				
+				if (lotteryList.get(j).getLotteryName().equalsIgnoreCase(blockName)) {					
+					
+					Lottery lottery = lotteryList.get(j);
+					
+					if (lottery.getBonusNumCount() == 0) {
+						Elements numberList = resultBlockList.get(i).getElementsByClass("number_shanida number_circle");						
+						String lotteryNumbers = null;
+						
+						//Create number list string with spaces
+						for (int x = 0; x < numberList.size(); x++) {
+							if (x == 0) {
+								lotteryNumbers = numberList.get(x).text();
+							} else {
+								lotteryNumbers = lotteryNumbers + " " + numberList.get(x).text();
+							}							
+						}
+						
+						lottery.setLotteryNumbers(lotteryNumbers);
+						
+						//Set lottery letter if there is one
+						if (lottery.getLetterCount() != 0) {
+							Elements lotteryletterList = resultBlockList.get(i).getElementsByClass("eng_letter");							
+							lottery.setLotteryLetter(lotteryletterList.get(0).text());							
+						}
+						
+					} else {
+						Elements numberList = resultBlockList.get(i).getElementsByClass("number_shanida number_circle");						
+						String lotteryNumbers = null;
+						
+						lottery.setLotteryBonus(numberList.last().text());
+						
+						//Create number list string with spaces
+						for (int x = 0; x < (numberList.size() - lottery.getBonusNumCount()); x++) {
+							if (x == 0) {
+								lotteryNumbers = numberList.get(x).text();
+							} else {
+								lotteryNumbers = lotteryNumbers + " " + numberList.get(x).text();
+							}							
+						}
+						
+						lottery.setLotteryNumbers(lotteryNumbers);
+						
+						//Set lottery letter if there is one
+						if (lottery.getLetterCount() != 0) {
+							Elements lotteryletterList = resultBlockList.get(i).getElementsByClass("eng_letter");							
+							lottery.setLotteryLetter(lotteryletterList.get(0).text());							
+						}
+						
+					}
+				}
+			}
 		}
 		
-		for (int i=0; i < resultBlockList.size(); i++) {
-			System.out.println(resultBlockList.get(i).getElementsByTag("img").get(0).attr("alt"));
+		for (int i=0; i < lotteryList.size(); i++) {
+			
+			lotteryMapper.updateLottery(lotteryList.get(i));
+			
+			System.out.println(lotteryList.get(i).getLotteryName());
+			System.out.println("num count"+lotteryList.get(i).getNumCount());
+			System.out.println(lotteryList.get(i).getLotteryNumbers());
+			System.out.println("letter count"+lotteryList.get(i).getLetterCount());
+			System.out.println(lotteryList.get(i).getLotteryLetter());
+			System.out.println("bonus count"+lotteryList.get(i).getBonusNumCount());
+			System.out.println(lotteryList.get(i).getLotteryBonus());
 		}
+		
+		System.out.println("Data succesfully updated");
 	}
 	
 	

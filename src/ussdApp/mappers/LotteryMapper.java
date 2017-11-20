@@ -78,6 +78,7 @@ public class LotteryMapper {
         				lottery.setNumCount(rs.getInt("numCount"));
         				lottery.setLetterCount(rs.getInt("letterCount"));
         				lottery.setBonusNumCount(rs.getInt("bonusNumCount"));
+        				lottery.setLotteryName(rs.getString("lotteryName"));
         			}
         		}
         }
@@ -86,5 +87,26 @@ public class LotteryMapper {
 
         
     }
+	
+	public void updateLottery (Lottery lottery) throws SQLException{
+
+        DatabaseConnect connect = new DatabaseConnect();
+
+        Connection con = connect.dbConnect();
+
+        String sql = "UPDATE lottery SET drawNumber = ?, lotterynumbers = ?, lotteryLetter = ?, lotteryBonus = ? WHERE lotteryName = ?";
+        
+     // create the mysql insert preparedstatement
+        PreparedStatement preparedStmt = con.prepareStatement(sql);
+        preparedStmt.setInt(1, lottery.getDrawNumber());
+        preparedStmt.setString(2, lottery.getLotteryNumbers());
+        preparedStmt.setString(3, lottery.getLotteryLetter());
+        preparedStmt.setString(4, lottery.getLotteryBonus());
+        preparedStmt.setString(5, lottery.getLotteryName());
+        
+        preparedStmt.execute();
+
+        con.close();
+	}
 
 }
