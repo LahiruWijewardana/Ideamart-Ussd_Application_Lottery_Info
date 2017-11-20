@@ -12,51 +12,55 @@ import ussdApp.model.Lottery;
 
 public class LotteryMapper {
 	
-	public ArrayList<String> showMatches() throws SQLException{
+	public ArrayList<String> showLotteries() throws SQLException{
 
         DatabaseConnect connect = new DatabaseConnect();
 
         Connection con = connect.dbConnect();
 
-        String query = "SELECT matchDetail from matchScores";
+        String query = "SELECT lotteryName from lottery";
         
         Statement stat = con.createStatement();
         ResultSet rs = stat.executeQuery(query);
         
-        ArrayList<String> matchScoresList = new ArrayList<String>();
+        ArrayList<String> lotteryDetails = new ArrayList<String>();
 
         while (rs.next()) {
-        		matchScoresList.add(rs.getString("matchDetail"));
+        		lotteryDetails.add(rs.getString("lotteryName"));
         }
 
         con.close();
 
-        return matchScoresList;
+        return lotteryDetails;
     }
 	
-	public String getScore(String match) throws SQLException{
-		
-        String score = null;
+	public Lottery getLotteryDetails(Lottery lottery) throws SQLException{
 
         DatabaseConnect connect = new DatabaseConnect();
 
         Connection con = connect.dbConnect();
 
-        String sql = "SELECT score from matchScores Where matchDetail = ?";
+        String sql = "SELECT * from lottery Where lotteryName = ?";
         
      // create the mysql insert preparedstatement
         PreparedStatement preparedStmt = con.prepareStatement(sql);
-        preparedStmt.setString(1, match);
+        preparedStmt.setString(1, lottery.getLotteryName());
         
         ResultSet rs = preparedStmt.executeQuery();
 
         while (rs.next()) {
-        		score = rs.getString("score");
+        		lottery.setDrawNumber(rs.getInt("drawNumber"));
+        		lottery.setNumCount(rs.getInt("numCount"));
+        		lottery.setLetterCount(rs.getInt("letterCount"));
+        		lottery.setBonusNumCount(rs.getInt("bonusNumCount"));
+        		lottery.setLotteryNumbers(rs.getString("lotterynumbers"));
+        		lottery.setLotteryLetter(rs.getString("lotteryLetter"));
+        		lottery.setLotteryBonus(rs.getString("lotteryBonus"));
         }
 
         con.close();
 
-        return score;
+        return lottery;
     }
 	
 	public void setCounts(ArrayList<Lottery> lotteryList) throws SQLException{
@@ -75,10 +79,15 @@ public class LotteryMapper {
         			Lottery lottery = lotteryList.get(i);
         			
         			if (rs.getString("lotteryName").equalsIgnoreCase(lottery.getLotteryName())) {
-        				lottery.setNumCount(rs.getInt("numCount"));
-        				lottery.setLetterCount(rs.getInt("letterCount"));
-        				lottery.setBonusNumCount(rs.getInt("bonusNumCount"));
-        				lottery.setLotteryName(rs.getString("lotteryName"));
+        				
+        				if (lottery.getDrawNumber() <= rs.getInt("drawNumber")) {
+        					lotteryList.remove(i);
+        				} else {
+        					lottery.setNumCount(rs.getInt("numCount"));
+            				lottery.setLetterCount(rs.getInt("letterCount"));
+            				lottery.setBonusNumCount(rs.getInt("bonusNumCount"));
+            				lottery.setLotteryName(rs.getString("lotteryName"));
+        				}        				
         			}
         		}
         }
