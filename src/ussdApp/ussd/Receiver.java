@@ -5,7 +5,6 @@ import ussdApp.mappers.LotteryMapper;
 import ussdApp.mappers.UsersMapper;
 import ussdApp.model.Users;
 import ussdApp.model.Lottery;
-import ussdApp.webcontent.GetContent;
 import hms.kite.samples.api.ussd.UssdRequestSender;
 import hms.kite.samples.api.ussd.MoUssdListener;
 import hms.kite.samples.api.ussd.messages.MoUssdReq;
@@ -16,12 +15,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 public class Receiver implements MoUssdListener {
 
@@ -42,15 +35,6 @@ public class Receiver implements MoUssdListener {
 	public void onReceivedUssd(MoUssdReq ussdCode) {
 		// TODO Auto-generated method stub
 		System.out.println("this is reciever");
-		
-		//GetContent getContent = new GetContent();
-		
-//		try {
-//			getContent.getDLBWebContent();
-//		} catch (Exception e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
 
 		String[] msisdnParts = ussdCode.getSourceAddress().split(":");
 		String msisdn = msisdnParts[1];

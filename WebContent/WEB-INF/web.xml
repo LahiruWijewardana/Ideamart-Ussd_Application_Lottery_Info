@@ -5,6 +5,10 @@
 <web-app>
   <display-name>Archetype Created Web Application</display-name>
   
+  	<listener>
+   		<listener-class>ussdApp.webcontent.GetContent</listener-class>
+	</listener>
+	
       <servlet>
         <servlet-name>Receiver</servlet-name>
         <servlet-class>hms.kite.samples.api.ussd.MoUssdReceiver</servlet-class>
@@ -18,4 +22,7 @@
         <servlet-name>Receiver</servlet-name>
         <url-pattern>/Receiver</url-pattern>
     </servlet-mapping>
+    
+    
+
 </web-app>
