@@ -65,7 +65,7 @@ public class LotteryMapper {
         return lottery;
     }
 	
-	public void setCounts(ArrayList<Lottery> lotteryList) throws SQLException{
+	public Lottery setCounts(Lottery lottery) throws SQLException{
 
         DatabaseConnect connect = new DatabaseConnect();
 
@@ -76,27 +76,26 @@ public class LotteryMapper {
         ResultSet rs = stat.executeQuery(query);
 
         while (rs.next()) {
-        		for (int i = 0; i < lotteryList.size(); i++) {
         			
-        			Lottery lottery = lotteryList.get(i);
-        			
-        			if (rs.getString("lotteryName").equalsIgnoreCase(lottery.getLotteryName())) {
+    			if (rs.getString("lotteryName").equalsIgnoreCase(lottery.getLotteryName())) {
+    				
+    				if (lottery.getDrawNumber() <= rs.getInt("drawNumber")) {
+    					lottery.setLatest(true);
+    				} else {
+    					lottery.setNumCount(rs.getInt("numCount"));
+        				lottery.setLetterCount(rs.getInt("letterCount"));
+        				lottery.setBonusNumCount(rs.getInt("bonusNumCount"));
+        				lottery.setLotteryName(rs.getString("lotteryName"));
+        				lottery.setHasSymbol(rs.getBoolean("hasSymbol"));
         				
-        				if (lottery.getDrawNumber() <= rs.getInt("drawNumber")) {
-        					lotteryList.remove(i);
-        				} else {
-        					lottery.setNumCount(rs.getInt("numCount"));
-            				lottery.setLetterCount(rs.getInt("letterCount"));
-            				lottery.setBonusNumCount(rs.getInt("bonusNumCount"));
-            				lottery.setLotteryName(rs.getString("lotteryName"));
-            				lottery.setHasSymbol(rs.getBoolean("hasSymbol"));
-        				}        				
-        			}
-        		}
+        				lottery.setLatest(false);
+    				}        				
+    			}
+        		
         }
 
         con.close();
-
+        return lottery;
         
     }
 	
@@ -120,6 +119,32 @@ public class LotteryMapper {
         preparedStmt.execute();
 
         con.close();
+	}
+	
+	public ArrayList<Lottery> getNLBLotteries() throws SQLException {
+		
+		DatabaseConnect connect = new DatabaseConnect();
+
+        Connection con = connect.dbConnect();
+
+        String query = "SELECT * FROM lottery WHERE IdValue IS NOT NULL";
+        
+        Statement stat = con.createStatement();
+        ResultSet rs = stat.executeQuery(query);
+        
+        ArrayList<Lottery> lotteryList = new ArrayList<Lottery>();
+        
+        while (rs.next()) {
+    			Lottery lottery = new Lottery();
+    			
+    			lottery.setLotteryName(rs.getString("lotteryName"));
+    			lottery.setIdValue(rs.getInt("IdValue"));
+    			lottery.setDrawNumber(rs.getInt("drawNumber"));
+    			
+    			lotteryList.add(lottery);
+        }
+		
+		return lotteryList;
 	}
 
 }

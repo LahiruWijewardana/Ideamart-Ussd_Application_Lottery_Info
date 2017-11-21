@@ -16,6 +16,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 public class Receiver implements MoUssdListener {
 
@@ -37,7 +43,7 @@ public class Receiver implements MoUssdListener {
 		// TODO Auto-generated method stub
 		System.out.println("this is reciever");
 		
-		GetContent getContent = new GetContent();
+		//GetContent getContent = new GetContent();
 		
 //		try {
 //			getContent.getDLBWebContent();
@@ -115,7 +121,7 @@ public class Receiver implements MoUssdListener {
 							returnMessage = lottery.getLotteryName() + "\n Draw Number: "+ lottery.getDrawNumber() + "\n Winning Numbers: " + lottery.getLotteryNumbers();
 							
 						} else {
-							returnMessage = lottery.getLotteryName() + "\n Draw Number: "+ lottery.getDrawNumber() + "\n Winning Numbers: " + lottery.getLotteryNumbers() + "\n Winning Letter: " + lottery.getLotteryLetter();
+							returnMessage = lottery.getLotteryName() + "\n Draw Number: "+ lottery.getDrawNumber() + "\n Winning Numbers: " + lottery.getLotteryNumbers() + "\n Winning Letters: " + lottery.getLotteryLetter();
 						}
 						
 						if (lottery.getHasSymbol()) {
@@ -123,7 +129,12 @@ public class Receiver implements MoUssdListener {
 						}
 						
 					} else {
-						returnMessage = lottery.getLotteryName() + "\n Draw Number: "+ lottery.getDrawNumber() + "\n Winning Numbers: " + lottery.getLotteryNumbers() + "\n Bounus Number: " + lottery.getLotteryBonus();
+										
+						if (lottery.getLetterCount() == 0) {
+							returnMessage = lottery.getLotteryName() + "\n Draw Number: "+ lottery.getDrawNumber() + "\n Winning Numbers: " + lottery.getLotteryNumbers() + "\n Bounus Numbers: " + lottery.getLotteryBonus();
+						} else {
+							returnMessage = lottery.getLotteryName() + "\n Draw Number: "+ lottery.getDrawNumber() + "\n Winning Numbers: " + lottery.getLotteryNumbers() + "\n Winning Letters: " + lottery.getLotteryLetter() +"\n Bounus Numbers: " + lottery.getLotteryBonus();
+						}
 						
 						if (lottery.getHasSymbol()) {
 							returnMessage = returnMessage + "\n Lucky Symbol: " + lottery.getLotterySymbol();

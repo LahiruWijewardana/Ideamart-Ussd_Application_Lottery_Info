@@ -7,11 +7,19 @@ public class Lottery {
 	private int letterCount;
 	private int bonusNumCount;
 	private Boolean hasSymbol;
+	private int IdValue;
 	private String lotteryNumbers;
 	private String lotteryLetter;
 	private String lotteryBonus;
 	private String lotterySymbol;
+	private Boolean latest;
 	
+	public Boolean getLatest() {
+		return latest;
+	}
+	public void setLatest(Boolean latest) {
+		this.latest = latest;
+	}
 	public Boolean getHasSymbol() {
 		return hasSymbol;
 	}
@@ -71,5 +79,11 @@ public class Lottery {
 	}
 	public void setLotteryBonus(String lotteryBonus) {
 		this.lotteryBonus = lotteryBonus;
+	}
+	public int getIdValue() {
+		return IdValue;
+	}
+	public void setIdValue(int idValue) {
+		IdValue = idValue;
 	}
 }

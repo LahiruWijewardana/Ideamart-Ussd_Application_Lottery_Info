@@ -13,4 +13,7 @@ public class Utility {
     public static final String username = "root";
     public static final String password = "lahiru123#";
     public static final String registerUserUrl = "http://localhost:8080/ussdApplication/Test";
+    
+    public static final String DLB_URL = "http://www.dlb.today/";
+    public static final String NLB_URL = "http://www.nlb.lk/show-results.php";
 }
